@@ -12,7 +12,17 @@
 //function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
-int main() {
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+    std::cout << key << std::endl;
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+}
+
+GLFWwindow* initGL()
+{
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -24,7 +34,7 @@ int main() {
 #endif
     glfwWindowHint(GLFW_SAMPLES, 4);
 
-    #ifdef __GLEW__
+#ifdef __GLEW__
     // Initialize GLEW to setup the OpenGL Function pointers
     glewExperimental = GL_TRUE;
     bool err = glewInit() != GLEW_OK;
@@ -40,7 +50,7 @@ int main() {
     {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
-        return -1;
+        return nullptr;
     }
     //通知GLFW将我们窗口的上下文设置为当前线程的主上下文了
     glfwMakeContextCurrent(window);
@@ -59,7 +69,11 @@ int main() {
         return 1;
     }
 #endif
+    return window;
+}
 
+void renderGL(GLFWwindow* window)
+{
     //设置窗口大小
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);//获取w,h而不是直接设置800, 600是为了保证视网膜屏下也能正常显示
@@ -201,16 +215,17 @@ int main() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
+}
 
+void destoryGL()
+{
     glfwTerminate();
+}
+int main() {
+
+    GLFWwindow* window = initGL();
+    renderGL(window);
+    destoryGL();
     std::cout << "Hello, World!" << std::endl;
     return 0;
-}
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
-{
-    std::cout << key << std::endl;
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-    {
-        glfwSetWindowShouldClose(window, GL_TRUE);
-    }
 }
