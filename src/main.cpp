@@ -75,9 +75,9 @@ GLFWwindow* initGL()
 void renderGL(GLFWwindow* window)
 {
     //设置窗口大小
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);//获取w,h而不是直接设置800, 600是为了保证视网膜屏下也能正常显示
-    glViewport(0, 0, width, height);
+    int screenWidth, screenHeight;
+    glfwGetFramebufferSize(window, &screenWidth, &screenHeight);//获取w,h而不是直接设置800, 600是为了保证视网膜屏下也能正常显示
+    glViewport(0, 0, screenWidth, screenHeight);
 
     GLfloat vertices[] = {
             //     ---- 位置 ----       ---- 颜色 ----     - 纹理坐标 -
@@ -117,8 +117,67 @@ void renderGL(GLFWwindow* window)
 
     glBindVertexArray(0);//unbind  VAO
 
+    float verticesCube[] = {
+            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+            0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+            0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+            0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+            0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+            0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+    };
+    GLuint cubeVAO, cubeVBO;
+    glGenVertexArrays(1, &cubeVAO);
+    glGenBuffers(1, &cubeVBO);
+
+    glBindVertexArray(cubeVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesCube), verticesCube, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);//uv texcoord
+
+    glBindVertexArray(0);
+
     Shader ourShader(CPP_SRC_DIR"../resources/shader.vs", CPP_SRC_DIR"../resources/shader.frag");
-    float offset = 0.5f;
 
     GLuint texture1;
     glGenTextures(1, &texture1);
@@ -163,14 +222,29 @@ void renderGL(GLFWwindow* window)
     stbi_image_free(image);
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    glm::vec3 cubePositions[] = {
+            glm::vec3( 0.0f,  0.0f,  0.0f),
+            glm::vec3( 2.0f,  5.0f, -15.0f),
+            glm::vec3(-1.5f, -2.2f, -2.5f),
+            glm::vec3(-3.8f, -2.0f, -12.3f),
+            glm::vec3( 2.4f, -0.4f, -3.5f),
+            glm::vec3(-1.7f,  3.0f, -7.5f),
+            glm::vec3( 1.3f, -2.0f, -2.5f),
+            glm::vec3( 1.5f,  2.0f, -2.5f),
+            glm::vec3( 1.5f,  0.2f, -1.5f),
+            glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
+
     //game loop
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();//函数检查有没有触发什么事件（比如键盘输入、鼠标移动等），然后调用对应的回调函数
 
+        glEnable(GL_DEPTH_TEST);
+
         //渲染指令
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //bind textures using texture units
         glActiveTexture(GL_TEXTURE0);
@@ -180,33 +254,43 @@ void renderGL(GLFWwindow* window)
         glBindTexture(GL_TEXTURE_2D, texture2);
         glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
 
-        glm::mat4  trans;
-        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-        trans = glm::rotate(trans, (GLfloat)glfwGetTime()*glm::radians(50.0f), glm::vec3(0.0, 0.0, 1.0));//注意改glm版本接收的是弧度而不是角度
-
-        GLuint transformLoc = glGetUniformLocation(ourShader.Program, "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
-
         //active shader
         ourShader.Use();
 
-        //draw
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
+        glm::mat4  model;
+        glm::mat4 view;
+        glm::mat4 projection;
+        model = glm::rotate(model, (GLfloat)glfwGetTime() * glm::radians(-55.0f), glm::vec3(1.0, -1.0, 0.0));//注意改glm版本接收的是弧度而不是角度
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));//将矩阵想要进行移动场景的反向移动; 值越小，距离越远，变得越小
+        projection = glm::perspective(glm::radians(45.0f), (GLfloat)screenWidth / (GLfloat )screenHeight , 0.1f, 100.0f);
 
-        glm::mat4  trans2;
-        trans2 = glm::translate(trans2, glm::vec3(-0.5f, 0.5f, 0.0f));
-        trans2 = glm::scale(trans2, glm::vec3(sin((GLfloat)glfwGetTime()), sin((GLfloat)glfwGetTime()), sin((GLfloat)glfwGetTime())));//注意改glm版本接收的是弧度而不是角度
+        GLuint modelLoc = glGetUniformLocation(ourShader.Program, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-        GLuint transformLoc2 = glGetUniformLocation(ourShader.Program, "transform");
-        glUniformMatrix4fv(transformLoc2, 1, GL_FALSE, glm::value_ptr(trans2));
+        GLuint viewLoc = glGetUniformLocation(ourShader.Program, "view");
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-        //active shader
-        ourShader.Use();
-        //draw
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        GLuint projectLoc = glGetUniformLocation(ourShader.Program, "projection");
+        glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+//        //draw
+//        glBindVertexArray(VAO);
+//        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+//        glBindVertexArray(0);
+
+        //draw cube
+        glBindVertexArray(cubeVAO);
+        for (GLuint i = 0; i < 10; i++)
+        {
+            glm::mat4 model;
+            model = glm::translate(model, cubePositions[i]);
+//            view = glm::translate(view, cubePositions[i]);
+            GLfloat  angle = 20.0f * i;
+            model = glm::rotate(model, angle, glm::vec3(1.0, 0.3f, 0.5f));
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+//        glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
 
         glfwSwapBuffers(window);//交换颜色缓冲
