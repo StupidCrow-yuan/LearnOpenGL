@@ -21,6 +21,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     }
 }
 
+
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
 GLFWwindow* initGL()
 {
     glfwInit();
@@ -179,6 +182,10 @@ void renderGL(GLFWwindow* window)
 
     Shader ourShader(CPP_SRC_DIR"../resources/shader.vs", CPP_SRC_DIR"../resources/shader.frag");
 
+    Shader lightShader(CPP_SRC_DIR"../resources/light.vs", CPP_SRC_DIR"../resources/light.frag");
+
+    Shader lampShader(CPP_SRC_DIR"../resources/lamp.vs", CPP_SRC_DIR"../resources/lamp.frag");
+
     GLuint texture1;
     glGenTextures(1, &texture1);
 
@@ -222,19 +229,6 @@ void renderGL(GLFWwindow* window)
     stbi_image_free(image);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    glm::vec3 cubePositions[] = {
-            glm::vec3( 0.0f,  0.0f,  0.0f),
-            glm::vec3( 2.0f,  5.0f, -15.0f),
-            glm::vec3(-1.5f, -2.2f, -2.5f),
-            glm::vec3(-3.8f, -2.0f, -12.3f),
-            glm::vec3( 2.4f, -0.4f, -3.5f),
-            glm::vec3(-1.7f,  3.0f, -7.5f),
-            glm::vec3( 1.3f, -2.0f, -2.5f),
-            glm::vec3( 1.5f,  2.0f, -2.5f),
-            glm::vec3( 1.5f,  0.2f, -1.5f),
-            glm::vec3(-1.3f,  1.0f, -1.5f)
-    };
-
     //game loop
     while (!glfwWindowShouldClose(window))
     {
@@ -254,43 +248,80 @@ void renderGL(GLFWwindow* window)
         glBindTexture(GL_TEXTURE_2D, texture2);
         glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
 
-        //active shader
-        ourShader.Use();
+//        //active shader
+//        ourShader.Use();
+//
+//        glm::mat4  model;
+//        glm::mat4 view;
+//        glm::mat4 projection;
+//        model = glm::rotate(model, (GLfloat)glfwGetTime() * glm::radians(-55.0f), glm::vec3(0.0, -1.0, 0.0));//注意改glm版本接收的是弧度而不是角度
+//        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));//将矩阵想要进行移动场景的反向移动; 值越小，距离越远，变得越小
+//        projection = glm::perspective(glm::radians(45.0f), (GLfloat)screenWidth / (GLfloat )screenHeight , 0.1f, 100.0f);
+//
+//        GLuint modelLoc = glGetUniformLocation(ourShader.Program, "model");
+//        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+//
+//        GLuint viewLoc = glGetUniformLocation(ourShader.Program, "view");
+//        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+//
+//        GLuint projectLoc = glGetUniformLocation(ourShader.Program, "projection");
+//        glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
+//
+////        //draw
+////        glBindVertexArray(VAO);
+////        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+////        glBindVertexArray(0);
+//
+//        //draw cube
+//        glBindVertexArray(cubeVAO);
+//        glDrawArrays(GL_TRIANGLES, 0, 36);
+//        glBindVertexArray(0);
+
+
+        lightShader.Use();
+    // 在此之前不要忘记首先'使用'对应的着色器程序(来设定uniform)
+        GLint objectColorLoc = glGetUniformLocation(lightShader.Program, "objectColor");
+        GLint lightColorLoc  = glGetUniformLocation(lightShader.Program, "lightColor");
+        glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);// 我们所熟悉的珊瑚红
+        glUniform3f(lightColorLoc,  1.0f, 1.0f, 1.0f); // 依旧把光源设置为白色
 
         glm::mat4  model;
         glm::mat4 view;
         glm::mat4 projection;
-        model = glm::rotate(model, (GLfloat)glfwGetTime() * glm::radians(-55.0f), glm::vec3(1.0, -1.0, 0.0));//注意改glm版本接收的是弧度而不是角度
+        model = glm::rotate(model, (GLfloat)glfwGetTime() * glm::radians(-55.0f), glm::vec3(0.0, -1.0, 0.0));//注意改glm版本接收的是弧度而不是角度
         view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));//将矩阵想要进行移动场景的反向移动; 值越小，距离越远，变得越小
         projection = glm::perspective(glm::radians(45.0f), (GLfloat)screenWidth / (GLfloat )screenHeight , 0.1f, 100.0f);
 
-        GLuint modelLoc = glGetUniformLocation(ourShader.Program, "model");
+        GLuint modelLoc = glGetUniformLocation(lightShader.Program, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-        GLuint viewLoc = glGetUniformLocation(ourShader.Program, "view");
+        GLuint viewLoc = glGetUniformLocation(lightShader.Program, "view");
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-        GLuint projectLoc = glGetUniformLocation(ourShader.Program, "projection");
+        GLuint projectLoc = glGetUniformLocation(lightShader.Program, "projection");
         glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-//        //draw
-//        glBindVertexArray(VAO);
-//        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-//        glBindVertexArray(0);
 
         //draw cube
         glBindVertexArray(cubeVAO);
-        for (GLuint i = 0; i < 10; i++)
-        {
-            glm::mat4 model;
-            model = glm::translate(model, cubePositions[i]);
-//            view = glm::translate(view, cubePositions[i]);
-            GLfloat  angle = 20.0f * i;
-            model = glm::rotate(model, angle, glm::vec3(1.0, 0.3f, 0.5f));
-            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
-//        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+
+        lampShader.Use();
+        model = glm::mat4();
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.2f));
+        modelLoc = glGetUniformLocation(lampShader.Program, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));//将矩阵想要进行移动场景的反向移动; 值越小，距离越远，变得越小
+        projection = glm::perspective(glm::radians(45.0f), (GLfloat)screenWidth / (GLfloat )screenHeight , 0.1f, 100.0f);
+        viewLoc = glGetUniformLocation(lightShader.Program, "view");
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+        projectLoc = glGetUniformLocation(lightShader.Program, "projection");
+        glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        //draw cube
+        glBindVertexArray(cubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
 
         glfwSwapBuffers(window);//交换颜色缓冲
@@ -310,6 +341,6 @@ int main() {
     GLFWwindow* window = initGL();
     renderGL(window);
     destoryGL();
-    std::cout << "Hello, World!" << std::endl;
+    std::cout << "render end!" << std::endl;
     return 0;
 }
