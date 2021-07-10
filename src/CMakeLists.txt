@@ -10,7 +10,7 @@ message(STATUS "Found GLFW3 in ${GLFW3_INCLUDE_DIR}")
 include_directories(${GLFW_INCLUDE_DIRS})
 
 include_directories(${LearnOpenGL_SOURCE_DIR}/includes)#将当前工程路径下的includes头文件包含进来
-link_directories(${LearnOpenGL_SOURCE_DIR/lib})
+link_directories(${LearnOpenGL_SOURCE_DIR}/lib)
 
 add_definitions("-DCPP_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\"")
 

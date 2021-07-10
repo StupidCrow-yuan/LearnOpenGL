@@ -1,8 +1,5 @@
 #include <iostream>
-//#define GLEW_STATIC
-//#include "GL/glew.h"
 #include "GL/gl3w.h"
-//#include "glad/glad.h"//  使用glew，glad也行，注意要在项目工程中添加gl3w.c（或者glad.c/使用glad）
 #include "GLFW/glfw3.h"
 #include "Shader.h"
 #include "stb_image.h"
@@ -124,47 +121,48 @@ void renderGL(GLFWwindow* window)
     glBindVertexArray(0);//unbind  VAO
 
     float verticesCube[] = {
-            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            // positions          // normals           // texture coords
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
+            0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+            0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
 
-            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-            0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
+            0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
 
-            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-            0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+            0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+            0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-            0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-            0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-            0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
+            0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+            0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
 
-            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-            0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-            0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-            0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
+            0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
     };
     GLuint cubeVAO, cubeVBO;
     glGenVertexArrays(1, &cubeVAO);
@@ -175,26 +173,36 @@ void renderGL(GLFWwindow* window)
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(verticesCube), verticesCube, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(GLfloat), (GLvoid*)(3*sizeof(GLfloat)));
     glEnableVertexAttribArray(1);//unormal texcoord
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(GLfloat), (GLvoid*)(6*sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);//uv texcoord
 
     glBindVertexArray(0);
 
-    Shader ourShader(CPP_SRC_DIR"../resources/shader.vs", CPP_SRC_DIR"../resources/shader.frag");
+    GLuint lightVAO;
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
 
-    Shader lightShader(CPP_SRC_DIR"../resources/light.vs", CPP_SRC_DIR"../resources/light.frag");
+//    Shader ourShader(CPP_SRC_DIR"/shader.vs", CPP_SRC_DIR"/shader.frag");
 
-    Shader lampShader(CPP_SRC_DIR"../resources/lamp.vs", CPP_SRC_DIR"../resources/lamp.frag");
+    Shader lightShader(CPP_SRC_DIR"light.vs", CPP_SRC_DIR"light.frag");
+
+    Shader lampShader(CPP_SRC_DIR"lamp.vs", CPP_SRC_DIR"lamp.frag");
 
     GLuint texture1;
     glGenTextures(1, &texture1);
 
 //    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
-    glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture1"), 0);
 
     // Set the texture wrapping parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
@@ -204,18 +212,20 @@ void renderGL(GLFWwindow* window)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     //load image
     int imgWidth, imgHeight, nComponents;
-    unsigned char* image = stbi_load(CPP_SRC_DIR"../resources/container.jpg", &imgWidth, &imgHeight, &nComponents, 3);
+    unsigned char* image = stbi_load(CPP_SRC_DIR"/textures/container2.png", &imgWidth, &imgHeight, &nComponents, 3);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imgWidth, imgHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(image);
     glBindTexture(GL_TEXTURE_2D, 0);
-
+    //set texture
+    lightShader.Use();
+    glUniform1i(glGetUniformLocation(lightShader.Program, "material.diffuse"), 0);
     //texture2
     GLuint texture2;
     glGenTextures(1, &texture2);
 
     glBindTexture(GL_TEXTURE_2D, texture2);
-    glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
+//    glUniform1i(glGetUniformLocation(lightShader.Program, "material.specular"), 1);
 
     // Set the texture wrapping parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT (usually basic wrapping method)
@@ -226,11 +236,13 @@ void renderGL(GLFWwindow* window)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     //load image
-    image = stbi_load(CPP_SRC_DIR"../resources/awesomeface.png", &imgWidth, &imgHeight, &nComponents, 3);
+    image = stbi_load(CPP_SRC_DIR"/textures/container2_specular.png", &imgWidth, &imgHeight, &nComponents, 3);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imgWidth, imgHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(image);
     glBindTexture(GL_TEXTURE_2D, 0);
+    glUniform1i(glGetUniformLocation(lightShader.Program, "material.specular"), 0);
+
 
     //game loop
     while (!glfwWindowShouldClose(window))
@@ -246,49 +258,21 @@ void renderGL(GLFWwindow* window)
         //bind textures using texture units
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
-        glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture1"), 0);
+        glUniform1i(glGetUniformLocation(lightShader.Program, "material.diffuse"), 0);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
-        glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
-
-//        //active shader
-//        ourShader.Use();
-//
-//        glm::mat4  model;
-//        glm::mat4 view;
-//        glm::mat4 projection;
-//        model = glm::rotate(model, (GLfloat)glfwGetTime() * glm::radians(-55.0f), glm::vec3(0.0, -1.0, 0.0));//注意改glm版本接收的是弧度而不是角度
-//        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));//将矩阵想要进行移动场景的反向移动; 值越小，距离越远，变得越小
-//        projection = glm::perspective(glm::radians(45.0f), (GLfloat)screenWidth / (GLfloat )screenHeight , 0.1f, 100.0f);
-//
-//        GLuint modelLoc = glGetUniformLocation(ourShader.Program, "model");
-//        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-//
-//        GLuint viewLoc = glGetUniformLocation(ourShader.Program, "view");
-//        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-//
-//        GLuint projectLoc = glGetUniformLocation(ourShader.Program, "projection");
-//        glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
-//
-////        //draw
-////        glBindVertexArray(VAO);
-////        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-////        glBindVertexArray(0);
-//
-//        //draw cube
-//        glBindVertexArray(cubeVAO);
-//        glDrawArrays(GL_TRIANGLES, 0, 36);
-//        glBindVertexArray(0);
+        glUniform1i(glGetUniformLocation(lightShader.Program, "material.specular"), 1);
 
 
         lightShader.Use();
-        GLint matAmbientLoc = glGetUniformLocation(lightShader.Program, "material.ambient");
-        GLint matDiffuseLoc = glGetUniformLocation(lightShader.Program, "material.diffuse");
+//        GLint matAmbientLoc = glGetUniformLocation(lightShader.Program, "material.ambient");
+//        GLint matDiffuseLoc = glGetUniformLocation(lightShader.Program, "material.diffuse");
         GLint matSpecularLoc = glGetUniformLocation(lightShader.Program, "material.specular");
         GLint matShineLoc = glGetUniformLocation(lightShader.Program, "material.shininess");
 
-        glUniform3f(matAmbientLoc, 1.0f, 0.5f, 0.31f);
-        glUniform3f(matDiffuseLoc, 1.0f, 0.5f, 0.31f);
+//        glUniform3f(matAmbientLoc, 1.0f, 0.5f, 0.31f);
+//        glUniform3f(matDiffuseLoc, 1.0f, 0.5f, 0.31f);
+//        glUniform1i(matDiffuseLoc, 0);
         glUniform3f(matSpecularLoc, 0.5f, 0.5f, 0.5f);
         glUniform1f(matShineLoc, 32.0f);
 
@@ -349,7 +333,7 @@ void renderGL(GLFWwindow* window)
         projectLoc = glGetUniformLocation(lightShader.Program, "projection");
         glUniformMatrix4fv(projectLoc, 1, GL_FALSE, glm::value_ptr(projection));
         //draw cube
-        glBindVertexArray(cubeVAO);
+        glBindVertexArray(lightVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
 
@@ -366,10 +350,10 @@ void destoryGL()
     glfwTerminate();
 }
 int main() {
-//
-//    GLFWwindow* window = initGL();
-//    renderGL(window);
-//    destoryGL();
+
+    GLFWwindow* window = initGL();
+    renderGL(window);
+    destoryGL();
     std::cout << "render end!" << std::endl;
     return 0;
 }
